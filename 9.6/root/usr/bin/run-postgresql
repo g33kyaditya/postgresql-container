@@ -1,5 +1,9 @@
 #!/bin/bash
 
+/usr/libexec/fix-permissions /var/lib/pgsql
+/usr/libexec/fix-permissions /var/run/postgresql
+su postgres
+
 export ENABLE_REPLICATION=${ENABLE_REPLICATION:-false}
 
 set -eu

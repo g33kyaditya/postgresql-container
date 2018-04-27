@@ -35,7 +35,7 @@ LABEL summary="$SUMMARY" \
 
 EXPOSE 5432
 
-COPY root/usr/libexec/fix-permissions /usr/libexec/fix-permissions
+COPY ./root/usr/libexec/fix-permissions /usr/libexec/fix-permissions
 
 # This image must forever use UID 26 for postgres user so our volumes are
 # safe in the future. This should *never* change, the last test is there
@@ -46,8 +46,9 @@ RUN yum install -y centos-release-scl-rh && \
     rpm -V $INSTALL_PKGS && \
     yum clean all && \
     localedef -f UTF-8 -i en_US en_US.UTF-8 && \
-    test "$(id postgres)" = "uid=26(postgres) gid=26(postgres) groups=26(postgres)" && \
-    mkdir -p /var/lib/pgsql/data && \
+    test "$(id postgres)" = "uid=26(postgres) gid=26(postgres) groups=26(postgres)"
+
+RUN mkdir -p /var/lib/pgsql/data && \
     /usr/libexec/fix-permissions /var/lib/pgsql && \
     /usr/libexec/fix-permissions /var/run/postgresql
 
@@ -72,7 +73,7 @@ VOLUME ["/var/lib/pgsql/data"]
 RUN /usr/libexec/fix-permissions ${APP_DATA} && \
     usermod -a -G root postgres
 
-USER 26
+USER root
 
 ENTRYPOINT ["container-entrypoint"]
 CMD ["run-postgresql"]
